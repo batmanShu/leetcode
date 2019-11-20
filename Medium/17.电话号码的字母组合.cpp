@@ -18,7 +18,6 @@ public:
             temp_str.push_back(itr0->second[j]);
             ret.push_back(temp_str);
         }
-        if(digits.size()==1) return ret;
         for(int i=1;i<digits.size();i++)
         {
             vector<string> cur_ret;
