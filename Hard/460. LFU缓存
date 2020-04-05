@@ -1,0 +1,70 @@
+struct Node {
+    int key;
+    int time;
+    int val;
+    int cnt;
+    Node(int _key,int _val, int _time, int _cnt):key(_key),val(_val),time(_time),cnt(_cnt){};
+    bool operator < (const Node& rhs) const{
+        return cnt==rhs.cnt?time<rhs.time:cnt<rhs.cnt;
+    }
+};
+class LFUCache {
+private:
+    int time=0;
+    unordered_map<int,Node> mp;
+    set<Node> S;
+    int cap=0;
+public:
+    LFUCache(int capacity) {
+        time=0;
+        mp.clear();
+        S.clear();
+        cap=capacity;
+    }
+    
+    int get(int key) {
+        if(cap==0) return -1;
+        auto itr=mp.find(key);
+        if(itr==mp.end()) return -1;
+        Node cache=itr->second;
+        S.erase(cache);
+        cache.time=++time;
+        cache.cnt++;
+        itr->second=cache;
+        S.insert(cache);
+        return cache.val;
+    }
+    
+    void put(int key, int value) {
+        if(cap==0) return;
+        auto itr=mp.find(key);
+        if(itr==mp.end())
+        {
+            if(mp.size()==cap)
+            {
+                mp.erase(S.begin()->key);
+                S.erase(S.begin());
+            }
+            Node cache=Node(key,value,++time,1);
+            mp.insert(make_pair(key,cache));
+            S.insert(cache);   
+        }
+        else
+        {
+            Node cache=itr->second;
+            S.erase(cache);
+            cache.val=value;
+            cache.time=++time;
+            cache.cnt++;
+            S.insert(cache);
+            itr->second=cache;
+        }
+    }
+};
+
+/**
+ * Your LFUCache object will be instantiated and called as such:
+ * LFUCache* obj = new LFUCache(capacity);
+ * int param_1 = obj->get(key);
+ * obj->put(key,value);
+ */
