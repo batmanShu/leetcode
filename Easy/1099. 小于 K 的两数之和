@@ -1,0 +1,28 @@
+class Solution {
+public:
+    int twoSumLessThanK(vector<int>& A, int K) {
+        sort(A.begin(),A.end());
+        int i=0;
+        int j=A.size()-1;
+        int sum=A[0];
+        int res;
+        int minus_val=INT_MAX;
+        while(i<j)
+        {
+            sum=A[i]+A[j];
+            if(sum>K) j--;
+            else if(sum<K) i++;
+            if(K-sum>0)
+            {
+                if(K-sum<minus_val)
+                {
+                    res=sum;
+                    minus_val=K-sum;
+                }
+            }
+            else if(K==sum) j--;
+        }
+        if(minus_val==INT_MAX) return -1;
+        return res;
+    }
+};
